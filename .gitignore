@@ -1,0 +1,44 @@
+# --- Python cache & build files ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+build/
+dist/
+
+# --- Environment folders ---
+.conda/
+.venv/
+venv/
+env/
+ENV/
+.pipcache/
+
+# --- Dataset & large training outputs ---
+datasets/
+data/
+outputs/
+runs/
+checkpoints/
+logs/
+wandb/
+client/
+
+# --- OS / Editor junk ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# --- Video / media test files ---
+*.mp4
+*.avi
+*.mov
+*.jpg
+*.jpeg
+*.png
+
+# --- Temporary / misc ---
+*.tmp
+*.log
+*.bak

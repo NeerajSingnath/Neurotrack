@@ -1,0 +1,12 @@
+torch
+torchvision
+ultralytics
+opencv-python
+pillow
+scikit-learn
+matplotlib
+tensorboard
+onnxruntime
+fastapi
+uvicorn
+python-multipart
