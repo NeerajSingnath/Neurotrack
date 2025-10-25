@@ -1,12 +1,17 @@
-torch
-torchvision
+# Core ML / Vision libraries (CPU only)
+torch --index-url https://download.pytorch.org/whl/cpu
+torchvision --index-url https://download.pytorch.org/whl/cpu
 ultralytics
-opencv-python
+opencv-python-headless
 pillow
+
+# Utilities
 scikit-learn
 matplotlib
 tensorboard
 onnxruntime
+
+# FastAPI backend
 fastapi
-uvicorn
+uvicorn[standard]
 python-multipart
