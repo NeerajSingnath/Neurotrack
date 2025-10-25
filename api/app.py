@@ -1,43 +1,44 @@
-"""# api/app.py
-from __future__ import annotations
-
-from fastapi import FastAPI, UploadFile, File, Form
-from fastapi.middleware.cors import CORSMiddleware
-from pathlib import Path
-from typing import List, Dict, Any, Tuple, Optional
-
-import tempfile, shutil, io, json, cv2, torch, numpy as np
-from PIL import Image
-from torchvision import models, transforms
-from torch import nn
-from ultralytics import YOLO
-import math
-import time
-
+# api/app.py
+# from __future__ import annotations
+# 
+# from fastapi import FastAPI, UploadFile, File, Form
+# from fastapi.middleware.cors import CORSMiddleware
+# from pathlib import Path
+# from typing import List, Dict, Any, Tuple, Optional
+# 
+# import tempfile, shutil, io, json, cv2, torch, numpy as np
+# from PIL import Image
+# from torchvision import models, transforms
+# from torch import nn
+# from ultralytics import YOLO
+# import math
+# import time
+# 
 # ---------- Paths & Globals ----------
 # If you prefer robust relative paths, comment next line and use ROOT = Path(__file__).resolve().parents[1]
-ROOT = Path(r"D:\Neurotrack")
-# ROOT = Path(__file__).resolve().parents[1]  # alternative: auto-detect project root
-MODELS = ROOT / "models"
-
-app = FastAPI(title="NeuroTrack Inference API", version="1.1.0")
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"],
-)
-
+# ROOT = Path(r"D:\Neurotrack")
+#ROOT = Path(__file__).resolve().parents[1]  # alternative: auto-detect project root
+# MODELS = ROOT / "models"
+# 
+# app = FastAPI(title="NeuroTrack Inference API", version="1.1.0")
+# app.add_middleware(
+    # CORSMiddleware,
+    # allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"],
+# )
+# 
 # ---------- Load Models ----------
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-
+# DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+# 
 # YOLO face detector
-yolo = YOLO(str(MODELS / "yolo_faces_best.pt"))
-
+# yolo = YOLO(str(MODELS / "yolo_faces_best.pt"))
+# 
 # Emotion labels
-with open(MODELS / "emotion_labels.json", "r", encoding="utf-8") as f:
-    EMO_LABELS: List[str] = json.load(f)
-
+# with open(MODELS / "emotion_labels.json", "r", encoding="utf-8") as f:
+    # EMO_LABELS: List[str] = json.load(f)
+# 
 # Emotion classifier (MobileNetV2 head)
-emo_model = models.mobilenet_v2(weights=models.MobileNet_V2_Weights.IMAGENET1K_V1)"""
+# emo_model = models.mobilenet_v2(weights=models.MobileNet_V2_Weights.IMAGENET1K_V1)
+
 
 from __future__ import annotations
 
