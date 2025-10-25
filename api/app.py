@@ -1,4 +1,4 @@
-# api/app.py
+"""# api/app.py
 from __future__ import annotations
 
 from fastapi import FastAPI, UploadFile, File, Form
@@ -37,7 +37,88 @@ with open(MODELS / "emotion_labels.json", "r", encoding="utf-8") as f:
     EMO_LABELS: List[str] = json.load(f)
 
 # Emotion classifier (MobileNetV2 head)
+emo_model = models.mobilenet_v2(weights=models.MobileNet_V2_Weights.IMAGENET1K_V1)"""
+
+from __future__ import annotations
+
+from fastapi import FastAPI, UploadFile, File, Form
+from fastapi.middleware.cors import CORSMiddleware
+from pathlib import Path
+from typing import List, Dict, Any, Tuple, Optional
+import os
+import tempfile, shutil, io, json, cv2, torch, numpy as np
+from PIL import Image
+from torchvision import models, transforms
+from torch import nn
+from ultralytics import YOLO
+import math
+import time
+
+# ---------- Paths & Globals ----------
+
+# Detect environment: local vs container (Render)
+# Render (Linux) runs from /app, local usually from D:\ or C:\ paths
+try:
+    ROOT = Path(__file__).resolve().parents[1]
+except Exception:
+    ROOT = Path.cwd()
+
+# If models folder exists locally, use that; else fallback to /app/models
+MODELS = ROOT / "models"
+if not MODELS.exists():
+    MODELS = Path("/app/models")
+
+# ---------- FastAPI init ----------
+app = FastAPI(title="NeuroTrack Inference API", version="1.2.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# ---------- Device selection ----------
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+print(f"🔹 Using device: {DEVICE}")
+print(f"🔹 Models path: {MODELS}")
+
+# ---------- Load Models ----------
+
+# YOLO face detector
+yolo_path = MODELS / "yolo_faces_best.pt"
+if not yolo_path.exists():
+    raise FileNotFoundError(f"YOLO model not found at: {yolo_path}")
+yolo = YOLO(str(yolo_path))
+
+# Emotion labels
+emo_labels_path = MODELS / "emotion_labels.json"
+if not emo_labels_path.exists():
+    raise FileNotFoundError(f"Emotion labels file not found at: {emo_labels_path}")
+
+with open(emo_labels_path, "r", encoding="utf-8") as f:
+    EMO_LABELS: List[str] = json.load(f)
+
+# Emotion classifier (MobileNetV2 head)
 emo_model = models.mobilenet_v2(weights=models.MobileNet_V2_Weights.IMAGENET1K_V1)
+in_feats = emo_model.classifier[1].in_features
+emo_model.classifier = nn.Sequential(
+    nn.Dropout(p=0.2),
+    nn.Linear(in_feats, 512),
+    nn.ReLU(inplace=True),
+    nn.Dropout(p=0.3),
+    nn.Linear(512, len(EMO_LABELS)),
+)
+emo_state_path = MODELS / "emotion_mbv2_best.pt"
+if not emo_state_path.exists():
+    raise FileNotFoundError(f"Emotion model weights not found at: {emo_state_path}")
+
+state = torch.load(emo_state_path, map_location=DEVICE)
+emo_model.load_state_dict(state)
+emo_model.eval().to(DEVICE)
+
+
 in_feats = emo_model.classifier[1].in_features
 emo_model.classifier = nn.Sequential(
     nn.Dropout(p=0.2),
