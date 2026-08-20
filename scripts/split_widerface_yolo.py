@@ -1,7 +1,7 @@
 from pathlib import Path
 import random, shutil
 
-ROOT = Path(r"D:\Neurotrack\datasets\widerface_yolo")
+ROOT = Path(__file__).resolve().parent.parent / "datasets" / "widerface_yolo"
 IMAGES = ROOT / "images"
 LABELS = ROOT / "labels"
 
