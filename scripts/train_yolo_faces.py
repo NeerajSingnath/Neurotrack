@@ -15,7 +15,7 @@ def main():
     if not DATA_YAML.exists():
         with open(DATA_YAML, "w") as f:
             yaml.safe_dump({
-                "path": "D:/Neurotrack/datasets/widerface_yolo",
+                "path": f"{ROOT}/widerface_yolo",
                 "train": "images/train",
                 "val": "images/val",
                 "names": ["face"]
