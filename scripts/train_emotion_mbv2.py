@@ -6,7 +6,7 @@ from torchvision import datasets, transforms, models
 from pathlib import Path
 
 def main():
-    ROOT = Path(r"D:\Neurotrack")
+    ROOT = Path(__file__).resolve().parent.parent
     FER_DIR = ROOT / "datasets" / "fer2013"
     MODELS_DIR = ROOT / "models"
     MODELS_DIR.mkdir(parents=True, exist_ok=True)
